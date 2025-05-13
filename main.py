@@ -52,7 +52,7 @@ try:
 
         if result and result["imagem_base64"]:
             image_bytes = base64.b64decode(result["imagem_base64"])
-            st.image(image_bytes, caption="Imagem da planta (ID 1)", use_column_width=True)
+            st.image(image_bytes, caption="Imagem da planta (ID 1)", use_container_width =True)
         else:
             st.warning("Nenhuma imagem encontrada com ID 1.")
 except Exception as e:
