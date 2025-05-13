@@ -42,6 +42,7 @@ except Exception as e:
 
 st.markdown("<h1 style='text-align: center;'>IMAGEM CAPTURADA</h1>", unsafe_allow_html=True)
 
+st.text('image: ')
 try:
     with conn.cursor() as cursor:
         cursor.execute("SELECT imagem_base64 FROM image WHERE id = 1")
