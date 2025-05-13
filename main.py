@@ -2,15 +2,20 @@ import streamlit as st
 import pymysql
 import pandas as pd
 from dotenv import load_dotenv
-import os
+import base64
 
+load_dotenv()
+
+def get_env_var(key):
+    if key in st.secrets:
+        return st.secrets[key]
 
 db_config = {
-    "host": st.secrets["DB_HOST"],
-    "port": int(st.secrets["DB_PORT"]),
-    "user": st.secrets["DB_USER"],
-    "password": st.secrets["DB_PASSWORD"],
-    "database": st.secrets["DB_NAME"],
+    "host": get_env_var("DB_HOST"),
+    "port": int(get_env_var("DB_PORT")),
+    "user": get_env_var("DB_USER"),
+    "password": get_env_var("DB_PASSWORD"),
+    "database": get_env_var("DB_NAME"),
     "ssl": {"ssl": {}},
     "charset": 'utf8mb4',
     "cursorclass": pymysql.cursors.DictCursor
@@ -34,3 +39,20 @@ try:
     conn.close()
 except Exception as e:
     st.error(f"Erro ao conectar ou consultar dados: {e}")
+
+st.markdown("<h1 style='text-align: center;'>IMAGEM CAPTURADA</h1>", unsafe_allow_html=True)
+
+try:
+    with conn.cursor() as cursor:
+        cursor.execute("SELECT imagem_base64 FROM image WHERE id = 1")
+        result = cursor.fetchone()
+
+        if result and result["imagem_base64"]:
+            image_bytes = base64.b64decode(result["imagem_base64"])
+            st.image(image_bytes, caption="Imagem da planta (ID 1)", use_column_width=True)
+        else:
+            st.warning("Nenhuma imagem encontrada com ID 1.")
+except Exception as e:
+    st.error(f"Erro: {e}")
+finally:
+    conn.close()
