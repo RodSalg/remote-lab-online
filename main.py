@@ -4,6 +4,9 @@ import pandas as pd
 from dotenv import load_dotenv
 import base64
 import time
+from streamlit_autorefresh import st_autorefresh
+
+st_autorefresh(interval=5000, key="imagem_autorefresh")
 
 load_dotenv()
 
@@ -22,7 +25,10 @@ db_config = {
     "cursorclass": pymysql.cursors.DictCursor
 }
 
-# 🔹 Bloco 1: Dados experimentais
+# Cabeçalho
+st.markdown("<h1 style='text-align: center;'>LABORATÓRIO REMOTO</h1>", unsafe_allow_html=True)
+
+# 🔹 Bloco 1: Tabela de dados
 try:
     conn = pymysql.connect(**db_config)
     with conn.cursor() as cursor:
@@ -39,25 +45,20 @@ try:
 except Exception as e:
     st.error(f"Erro ao consultar dadoscoletados2: {e}")
 
-# 🔹 Bloco 2: Imagem com atualização automática
+# 🔹 Bloco 2: Imagem atualizada automaticamente
 st.markdown("<h1 style='text-align: center;'>IMAGEM CAPTURADA</h1>", unsafe_allow_html=True)
-placeholder = st.empty()
 
-while True:
-    try:
-        conn = pymysql.connect(**db_config)
-        with conn.cursor() as cursor:
-            cursor.execute("SELECT imagem_base64 FROM image WHERE id = 1")
-            result = cursor.fetchone()
+try:
+    conn = pymysql.connect(**db_config)
+    with conn.cursor() as cursor:
+        cursor.execute("SELECT imagem_base64 FROM image WHERE id = 1")
+        result = cursor.fetchone()
 
-            if result and result["imagem_base64"]:
-                image_bytes = base64.b64decode(result["imagem_base64"])
-                with placeholder.container():
-                    st.image(image_bytes, caption="Imagem da planta (ID 1)", use_container_width=True)
-            else:
-                with placeholder.container():
-                    st.warning("Nenhuma imagem encontrada com ID 1.")
-        conn.close()
-    except Exception as e:
-        st.error(f"Erro ao carregar imagem: {e}")
-    time.sleep(2)  # Atualiza a cada 2 segundos
+        if result and result["imagem_base64"]:
+            image_bytes = base64.b64decode(result["imagem_base64"])
+            st.image(image_bytes, caption="Imagem da planta (ID 1)", use_container_width=True)
+        else:
+            st.warning("Nenhuma imagem encontrada com ID 1.")
+    conn.close()
+except Exception as e:
+    st.error(f"Erro ao carregar imagem: {e}")
