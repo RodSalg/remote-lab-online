@@ -6,7 +6,7 @@ import base64
 import time
 from streamlit_autorefresh import st_autorefresh
 
-st_autorefresh(interval=5000, key="imagem_autorefresh")
+st_autorefresh(interval=2000, key="imagem_autorefresh")
 
 load_dotenv()
 
