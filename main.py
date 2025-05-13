@@ -22,8 +22,10 @@ db_config = {
 }
 
 
+# Cabeçalho
 st.markdown("<h1 style='text-align: center;'>LABORATÓRIO REMOTO</h1>", unsafe_allow_html=True)
 
+# 🔹 Primeiro bloco: dadoscoletados2
 try:
     conn = pymysql.connect(**db_config)
     with conn.cursor() as cursor:
@@ -38,12 +40,13 @@ try:
         st.markdown("</div>", unsafe_allow_html=True)
     conn.close()
 except Exception as e:
-    st.error(f"Erro ao conectar ou consultar dados: {e}")
+    st.error(f"Erro ao consultar dadoscoletados2: {e}")
 
+# 🔹 Segundo bloco: imagem
 st.markdown("<h1 style='text-align: center;'>IMAGEM CAPTURADA</h1>", unsafe_allow_html=True)
 
-st.text('image: ')
 try:
+    conn = pymysql.connect(**db_config)
     with conn.cursor() as cursor:
         cursor.execute("SELECT imagem_base64 FROM image WHERE id = 1")
         result = cursor.fetchone()
@@ -53,7 +56,6 @@ try:
             st.image(image_bytes, caption="Imagem da planta (ID 1)", use_column_width=True)
         else:
             st.warning("Nenhuma imagem encontrada com ID 1.")
-except Exception as e:
-    st.error(f"Erro: {e}")
-finally:
     conn.close()
+except Exception as e:
+    st.error(f"Erro ao carregar imagem: {e}")
