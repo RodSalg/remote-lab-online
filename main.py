@@ -38,7 +38,6 @@ try:
         st.markdown("<div style='text-align: center;'>", unsafe_allow_html=True)
         st.dataframe(df, use_container_width=True)
         st.markdown("</div>", unsafe_allow_html=True)
-    conn.close()
 except Exception as e:
     st.error(f"Erro ao consultar dadoscoletados2: {e}")
 
@@ -56,6 +55,5 @@ try:
             st.image(image_bytes, caption="Imagem da planta (ID 1)", use_column_width=True)
         else:
             st.warning("Nenhuma imagem encontrada com ID 1.")
-    conn.close()
 except Exception as e:
     st.error(f"Erro ao carregar imagem: {e}")
